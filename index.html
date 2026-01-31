@@ -2,13 +2,166 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Teste GitHub Pages</title>
+  <title>Simulador de Pedido</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .aviso {
+      text-align: center;
+      color: red;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    input {
+      width: 70px;
+    }
+
+    #whatsappBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 40px;
+      text-decoration: none;
+      display: none;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>FUNCIONOU</h1>
-<p>Se você está vendo isso, o GitHub Pages está ativo.</p>
+<h1>Simulador de Pedido</h1>
+
+<div class="aviso">
+  VENDA APENAS ATACADO – ACIMA DE 500 KG
+</div>
+
+<table id="tabela">
+  <thead>
+    <tr>
+      <th>Tamanho</th>
+      <th>Qtd (mil)</th>
+      <th>Preço R$/mil</th>
+      <th>Total R$</th>
+      <th>Peso kg</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+  <tfoot>
+    <tr>
+      <th colspan="3">TOTAL</th>
+      <th id="totalValor">R$ 0,00</th>
+      <th id="totalPeso">0 kg</th>
+    </tr>
+  </tfoot>
+</table>
+
+<a id="whatsappBtn" target="_blank">📲 Enviar orçamento</a>
+
+<script>
+const produtos = [
+  ["12x18 + ABA", 27.90, 1.7],
+  ["15x25 + ABA", 46.90, 3.0],
+  ["19x25 + ABA", 59.90, 3.4],
+  ["20x30 + ABA", 74.90, 4.5],
+  ["22x40 + ABA",105.90, 6.8]
+  ["25x35 + 3ABA",101.90,7.2],
+  ["26x36 + 3ABA",105.90,7,4],
+  ["25x45 + 3ABA",133.90,8.2],
+  ["30x40 + 3ABA",143.90,8.8],
+  ["32x40 + 3ABA",152.90,10.6],
+  ["35x50 + 3ABA",207.90,11.8],
+  ["40x50 + 3ABA",237.90,14.0],
+  ["40x60 + 3ABA",283.90,16.90],
+  ["50x60 + 3ABA",354.90,21.90]
+];
+
+const tbody = document.querySelector("#tabela tbody");
+
+produtos.forEach(p => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${p[0]}</td>
+    <td><input type="number" min="0" oninput="calcular()"></td>
+    <td>R$ ${p[1].toFixed(2)}</td>
+    <td>-</td>
+    <td>-</td>
+  `;
+  tr.dataset.preco = p[1];
+  tr.dataset.peso = p[2];
+  tbody.appendChild(tr);
+});
+
+function calcular() {
+  let totalValor = 0;
+  let totalPeso = 0;
+  let mensagem = "Pedido:%0A";
+  let temPedido = false;
+
+  [...tbody.rows].forEach(row => {
+    const qtd = Number(row.cells[1].children[0].value);
+    if (!qtd) return;
+
+    temPedido = true;
+    const subtotal = qtd * row.dataset.preco;
+    const peso = qtd * row.dataset.peso;
+
+    row.cells[3].innerText = "R$ " + subtotal.toFixed(2);
+    row.cells[4].innerText = peso.toFixed(1) + " kg";
+
+    totalValor += subtotal;
+    totalPeso += peso;
+
+    mensagem += `${row.cells[0].innerText}: ${qtd} mil%0A`;
+  });
+
+  document.getElementById("totalValor").innerText =
+    "R$ " + totalValor.toFixed(2);
+  document.getElementById("totalPeso").innerText =
+    totalPeso.toFixed(1) + " kg";
+
+  const btn = document.getElementById("whatsappBtn");
+
+  if (temPedido) {
+    btn.style.display = "block";
+    btn.href =
+      "https://wa.me/5511990728646?text=" +
+      mensagem +
+      `%0ATotal: R$ ${totalValor.toFixed(2)}%0APeso: ${totalPeso.toFixed(1)} kg`;
+  } else {
+    btn.style.display = "none";
+  }
+}
+</script>
 
 </body>
 </html>
-
