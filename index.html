@@ -1,5 +1,4 @@
-<script>
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -41,6 +40,7 @@
 
     input {
       width: 70px;
+      padding: 4px;
     }
 
     #whatsappBtn {
@@ -54,6 +54,16 @@
       text-decoration: none;
       display: none;
       font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 12px;
+      }
+      input {
+        width: 50px;
+      }
     }
   </style>
 </head>
@@ -63,7 +73,7 @@
 <h1>Simulador de Pedido</h1>
 
 <div class="aviso">
-  VENDA APENAS ATACADO – ACIMA DE 500 KG
+  VENDA APENAS ATACADO – ACIMA DE 500 KG - FOB - GUARULHOS - SP
 </div>
 
 <table id="tabela">
@@ -76,10 +86,11 @@
       <th>Peso kg</th>
     </tr>
   </thead>
-    
+
   <tbody>
+    <!-- linhas geradas pelo JavaScript -->
   </tbody>
-    
+
   <tfoot>
     <tr>
       <th colspan="3">TOTAL</th>
@@ -98,20 +109,19 @@ const produtos = [
   ["19x25 + ABA", 59.90, 3.4],
   ["20x30 + ABA", 74.90, 4.5],
   ["22x40 + ABA",105.90, 6.8],
-  ["25x35 + 3ABA",101.90,7.2],
-  ["26x36 + 3ABA",105.90,7,4],
-  ["25x45 + 3ABA",133.90,8.2],
-  ["30x40 + 3ABA",143.90,8.8],
-  ["32x40 + 3ABA",152.90,10.6],
-  ["35x50 + 3ABA",207.90,11.8],
-  ["40x50 + 3ABA",237.90,14.0],
-  ["40x60 + 3ABA",283.90,16.90],
-  ["50x60 + 3ABA",354.90,21.90]
+  ["25x35 + 3 ABA",101.90, 7.2],
+  ["26x36 + 3 ABA",105.90, 7.4],
+  ["25x45 + 3 ABA",133.90, 8.2],
+  ["30x40 + 3 ABA",143.90, 8.8],
+  ["32x40 + 3 ABA",152.90,10.6],
+  ["35x50 + 3 ABA",207.90,11.8],
+  ["40x50 + 3 ABA",237.90,14.0],
+  ["40x60 + 3 ABA",283.90,16.9],
+  ["50x60 + 3 ABA",354.90,21.9]
 ];
 
-
 const tabela = document.getElementById("tabela");
-const tbody = tabela.getElementsByTagName("tbody")[0];
+const tbody = tabela.querySelector("tbody");
 
 produtos.forEach(produto => {
   const linha = tbody.insertRow();
@@ -122,6 +132,7 @@ produtos.forEach(produto => {
   const input = document.createElement("input");
   input.type = "number";
   input.min = "0";
+  input.value = "";
   input.oninput = calcular;
   cellQtd.appendChild(input);
 
@@ -140,7 +151,7 @@ function calcular() {
   let temPedido = false;
 
   [...tbody.rows].forEach(row => {
-    const qtd = Number(row.cells[1].children[0].value);
+    const qtd = Number(row.cells[1].querySelector("input").value);
     if (!qtd) {
       row.cells[3].innerText = "-";
       row.cells[4].innerText = "-";
@@ -148,8 +159,9 @@ function calcular() {
     }
 
     temPedido = true;
-    const preco = row.dataset.preco;
-    const peso = row.dataset.peso;
+
+    const preco = Number(row.dataset.preco);
+    const peso = Number(row.dataset.peso);
 
     const subtotal = qtd * preco;
     const pesoTotal = qtd * peso;
@@ -174,7 +186,7 @@ function calcular() {
   if (temPedido) {
     btn.style.display = "block";
     btn.href =
-      "https://wa.me/5511990728646?text=" +
+      "https://wa.me/5531990728646?text=" +
       mensagem +
       `%0ATotal: R$ ${totalValor.toFixed(2)}%0APeso: ${totalPeso.toFixed(1)} kg`;
   } else {
@@ -183,6 +195,5 @@ function calcular() {
 }
 </script>
 
-  
 </body>
 </html>
